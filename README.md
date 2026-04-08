@@ -1,4 +1,90 @@
-# Learning from Interface-Augmented Assembly Graphs
+# Linkify: Learning from Interface-Augmented Assembly Graphs
+
+
+**Authors:**
+- **Anushrut Jignasu** — Iowa State University
+- **Daniele Grandi** — Autodesk Research
+
+<p align="center">
+  <img src="teaser.png" alt="Teaser figure" width="100%"/>
+</p>
+<p align="center"><em>We augment the assembly graph representation, where part geometries are embedded within nodes of the graph, by embedding local interface information (contact geometry) within the edges of the graph.</em></p>
+
+We present Linkify, a framework for learning from interface-augmented assembly graphs to enable context-aware part retrieval in mechanical assemblies. While recent generative AI methods for CAD have focused largely on isolated parts or monolithic assemblies, the rich geometric information at the interfaces between parts, where function is realized, remains underexplored. We address this gap by recomputing high-fidelity interface geometry for the Fusion 360 Gallery Assembly dataset, correcting missing and erroneous contacts and generating point-cloud representations of local contact regions. Using this data, we construct assembly graphs whose nodes encode part geometry and whose edges encode interface geometry via a pretrained point-cloud encoder. On top of this representation, we train a Graph Attention Network based on GATv2 to solve a masked part prediction task: given an assembly with one part held out, the model predicts the class of the missing component from a large vocabulary of geometrically clustered parts, thereby approximating a realistic part-retrieval scenario. Compared to non-graph baselines such as logistic regression and k-nearest neighbors operating on aggregated node features, Linkify achieves higher Top-K accuracy and F1 scores. Ablation studies on graph connectivity, edge attributes, and attention mechanisms demonstrate that accurate contact computation and dynamic attention over interfaces are critical for performance. Our corrected interface dataset and training pipeline, released publicly, provide a foundation for future interface-aware models for assembly retrieval, validation, and generative design.
+
+# Dataset Overview
+
+- **Prefix**: `contacts_assembly_json`
+- **Uncompressed Size**: 211 GB (189,423 files)
+- **Compressed Size**: 93.2 GB
+- **Format**: tar.gz split into 10 parts
+- **Parts**: 9 × 10GB + 1 × 3.2GB
+
+## Download URLs
+
+The dataset is split into 10 archive parts hosted on S3:
+
+- [contacts_assembly_json.tar.gz.partaa](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partaa) (10 GB)
+- [contacts_assembly_json.tar.gz.partab](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partab) (10 GB)
+- [contacts_assembly_json.tar.gz.partac](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partac) (10 GB)
+- [contacts_assembly_json.tar.gz.partad](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partad) (10 GB)
+- [contacts_assembly_json.tar.gz.partae](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partae) (10 GB)
+- [contacts_assembly_json.tar.gz.partaf](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partaf) (10 GB)
+- [contacts_assembly_json.tar.gz.partag](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partag) (10 GB)
+- [contacts_assembly_json.tar.gz.partah](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partah) (10 GB)
+- [contacts_assembly_json.tar.gz.partai](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partai) (10 GB)
+- [contacts_assembly_json.tar.gz.partaj](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partaj) (3.2 GB)
+- [contacts_assembly_json.tar.gz.sha256](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.sha256) (checksums)
+
+## Quick Start (Automated)
+
+Use the provided script to automatically download, verify, and extract the dataset:
+
+```bash
+./download_and_extract.sh
+```
+
+To automatically remove archive parts after successful extraction (saves ~93.2 GB):
+
+```bash
+./download_and_extract.sh --cleanup
+```
+
+The script will:
+1. Download all 10 archive parts (~93.2 GB)
+2. Download the checksum file
+3. Verify file integrity using SHA-256 checksums
+4. Reassemble and extract the archive (~211 GB)
+5. Optionally clean up archive parts (with `--cleanup` flag)
+
+## Manual Instructions
+
+For step-by-step manual download, verification, and extraction instructions, see [DOWNLOAD_MANUAL.md](DOWNLOAD_MANUAL.md).
+
+## Dataset Structure
+
+After extraction, the dataset will be in the `contacts_assembly_json` directory with the following structure:
+
+```
+contacts_assembly_json/
+├── 100029_94515530/
+│   └── assembly.json
+├── 146230_1fb4f765/
+│   └── assembly.json
+├── ...
+└── [additional assembly directories]/
+    └── assembly.json
+```
+
+Each directory contains a single `assembly.json` file with contact interface data for that assembly.
+
+**The folder structure is compatible with the [Fusion 360 Gallery Assembly dataset](https://github.com/AutodeskAILab/Fusion360GalleryDataset/blob/master/docs/assembly.md). This means you can copy (and overwrite) this data into the original dataset to create an augmented dataset as described in the paper.**
+
+## Storage Requirements
+
+- Download: ~93.2 GB free space
+- Extraction: ~211 GB free space
+- Total during extraction: ~304 GB free space (until you clean up archive parts)
 
 ## Dependencies
 - Python 3.12+
