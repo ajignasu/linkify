@@ -36,7 +36,7 @@ The dataset is split into 10 archive parts hosted on S3:
 - [contacts_assembly_json.tar.gz.partaj](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.partaj) (3.2 GB)
 - [contacts_assembly_json.tar.gz.sha256](https://fusion-360-gallery-assembly-interfaces.s3.us-west-2.amazonaws.com/public-archives/contacts_assembly_json.tar.gz.sha256) (checksums)
 
-## Quick Start (Automated)
+## Script for Automatic Download and Extract
 
 Use the provided script to automatically download, verify, and extract the dataset:
 
